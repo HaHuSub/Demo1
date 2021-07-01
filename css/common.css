@@ -1,0 +1,32 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+a{
+    text-decoration: none;
+}
+
+ul{
+    list-style: none;
+}
+
+.box{
+    width: 100%;
+}
+.wrap{
+    width: 1400px;
+    margin: 0 auto;
+}
+
+.clear-fix::after,.clear-fix::before{
+    content: "";
+    display: block;
+    clear: both;
+}
+.left{
+    float: left;
+}
+.right{
+    float: right;
+}
