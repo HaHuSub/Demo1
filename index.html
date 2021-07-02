@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,28 +9,118 @@
 </head>
 <link rel="stylesheet" href="./css/common.css">
 <link rel="stylesheet" href="./css/index.css">
+
 <body>
     <div class="box">
-        <div class="wrap bar">
-            <div class="clear-fix">
-                <div class="left"><img src="./assets/images/logo.png" alt=""></div>
-            <div class="right">
-                <div class="search">
-                    <input type="text"><div class="right">搜索</div>
+      
+        <div class="box-bar">
+            <div class="wrap bar">
+                <div class="clear-fix">
+                    <div class="left"><img src="./assets/images/logo.png" alt=""></div>
+                    <div class="right">
+                        <div class="search">
+                            <input type="text" placeholder="请输入你想要的商品">
+                            <div class="right">搜索</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <ul class="tab-ul">
+                        <li>
+                            <div class="active-tab-div">首页</div>
+                        </li>
+                        <li>
+                            <div>登录</div>
+                        </li>
+                        <li>
+                            <div>注册</div>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+        <div class="three-content">
+            <div class="first-content">
+                <div class="wrap">
+                    <div class="t-title">
+                        <ul class="t-ul">
+                            <li><a href="#">咖啡</a></li>
+                            <li><a href="#">饮食</a></li>
+                            <li><a href="#">正餐</a></li>
+                            <li><a href="#">男装</a></li>
+                            <li><a href="#">女装</a></li>
+                            <li><a href="#">眼镜</a></li>
+                            <li><a href="#">鞋靴</a></li>
+                        </ul>
+                    </div>
+                    <div class="t-content">
+                        <div class="carousel-map">
+                            
+                        </div>
+                        <ul class="circle-list">
+                            <li class="circle active" data-n="0"></li>
+                            <li class="circle" data-n="1"></li>
+                            <li class="circle" data-n="2"></li>
+                            <li class="circle" data-n="3"></li>
+                            <li class="circle" data-n="4"></li>
+                           
+                           
+                        </ul>
+                    </div>
+                    <div class="box">
+                        <div class="list clear-fix"></div>
+                    </div>
+                    
+                    <hr>
+                    
                 </div>
             </div>
-            </div>
-            <div>
-                <ul>
-                    <li></li>
-                    <li></li>
-                    <li>
-                        
-                    </li>
-                </ul>
-            </div>
-            
+
         </div>
     </div>
 </body>
+<script src="./js/index.js"></script>
+<script src="./js/request.js"></script>
+<script >
+
+var page = 1;
+    var list = document.querySelector(".list");
+    function swipter() {
+
+    }
+
+    function getShopList() {
+        REQUEST.get("/api/goodlist",
+            {
+                params: {
+                    page: 1
+                }
+            }, function (data) {
+                console.log(data);
+                var html = "";
+                for (var i = 0; i < data.length; i++) {
+                    html += `
+                    <div class="left boxx">
+                            <img src="${data[i].img_list_url}" alt="">
+                            <hr>
+                            <p>
+                                <span class="good-title">${data[i].title}</span>
+                                
+                            </p>
+                            <div  class="bottom">
+                                <div class="left"> 
+                                <span>￥${data[i].price}</span>
+                            </div>
+                            <div class="right">
+                                <span>${data[i].mack}</span>
+                                </div>
+                            </div>
+                       </div>`
+                }
+                list.innerHTML = html;
+            })
+    }
+    getShopList();
+</script>
 </html>

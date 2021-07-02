@@ -1,14 +1,17 @@
+.box-bar{
+    box-shadow: 0 7px 5px 3px #dadada ;
+}
 .bar{
     height: 200px;
-    background-color: antiquewhite;
-    border: 1px solid #757575;
+   
+ 
 }
 .search{
     width: 300px;
     height: 40px;
     border: 1px solid #dadada;
     background-color: white;
-    margin-top: 30px;
+    margin-top: 40px;
     border-radius: 10px;
     padding-left: 10px;
     margin-right: 20px;
@@ -26,4 +29,156 @@
     padding-right: 20px;
     padding-left: 20px;
     border-left:1px solid #dadada ;
+}
+
+.tab-ul{
+    margin-top: 40px;
+}
+.tab-ul li{
+    float: left;
+    font-size: 20px;
+    font-weight: bold;
+    margin-left:  40px;
+}
+.tab-ul div{
+    padding: 2px 10px;
+}
+.active-tab-div{
+    color: blueviolet;
+    border-bottom: 4px solid blueviolet;
+}
+
+.t-title{
+    height: 70px;
+    line-height: 70px;
+    padding: 0 100px;
+}
+.t-title a{
+    color: rgb(128, 128, 128);
+    font-weight: 600;
+    font-size: 18px;
+}
+/* .t-title li{
+    float: left;
+    margin-right: 135px;
+} */
+.t-ul{
+    display: flex;
+
+    justify-content: space-between;
+
+    
+}
+
+.t-ul{
+    margin-top: 20px;
+}
+.t-ul li:hover a{
+    color: orangered;
+}
+.t-ul>li{
+    padding: 0 20px;
+}
+
+.t-content{
+    overflow: hidden;
+    width: 1200px;
+    height: 500px;
+    margin: 0 auto;
+    position: relative;
+    border-radius: 30px;
+}
+
+.carousel-map{
+    display: flex;
+    width: 1200px;
+    margin-left: 0;
+    /* overflow: hidden; */
+    margin: 0 auto;
+    
+    transition: ease 0.5s;
+    position: relative;
+    left: 0;
+
+    
+}
+.carousel-map img{
+    width: 1200px;
+    height: 500px;
+    /* transition: all .5s; */
+
+}
+
+.circle-list{
+    display: flex;
+    position: absolute;
+    
+    z-index: 10;
+    transform: (-50%,0);
+    width: 200px;
+    height: 20px;
+    right: 100px;
+    bottom: 20px;
+}
+.circle-list .circle{
+    width: 30px;
+    height: 7px;
+    margin: 0px 5px ;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 2px;
+
+}
+.circle-list .active{
+    background-color: rgba(255, 25, 25, 0.8);
+}
+
+div{
+    text-align: center;
+}
+.boxx{
+    width: 250px;
+    
+    margin: 10px;
+    padding: 10px;
+    background-color: white;
+    
+}
+.boxx:hover{
+    box-shadow: 0px 10px 5px #cacaca;
+    transition: all 0.5s;
+    transform: scale(1.01);
+   outline: 3px solid #cacaca;
+}
+.boxx:hover img{
+    transform: scale(1.05);
+    transition: all 1s;
+}
+img{
+    width: 240px;
+
+}
+.bottom{
+    padding: 0px 40px;
+}
+.good-title{
+    font-weight: bold;
+}
+.wrap{
+    width: 1200px;
+    margin: 0 auto;
+    
+  
+}
+.clear-fix::after,.clear-fix::before{
+    content: "";
+    display: block;
+    clear: both;
+}
+.box{
+    width: 100%;
+}
+.list{
+    width: 1200px;
+    margin: 0 auto;
+    background-color: rgb(255, 255, 255);
 }
