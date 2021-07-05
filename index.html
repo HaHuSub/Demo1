@@ -12,7 +12,8 @@
 
 <body>
     <div class="box">
-      
+        <!-- 回顶部按钮 -->
+        <div class="backTopBtn">回到顶部</div>
         <div class="box-bar">
             <div class="wrap bar">
                 <div class="clear-fix">
@@ -56,7 +57,7 @@
                     </div>
                     <div class="t-content">
                         <div class="carousel-map">
-                            
+
                         </div>
                         <ul class="circle-list">
                             <li class="circle active" data-n="0"></li>
@@ -64,40 +65,45 @@
                             <li class="circle" data-n="2"></li>
                             <li class="circle" data-n="3"></li>
                             <li class="circle" data-n="4"></li>
-                           
-                           
+
+
                         </ul>
                     </div>
                     <div class="box">
-                        <div class="list clear-fix"></div>
+                        <div id="goodList" class="list clear-fix"></div>
                     </div>
-                    
+
                     <hr>
-                    
+
                 </div>
             </div>
 
         </div>
+        <!-- <div class="list">
+
+        </div> -->
     </div>
 </body>
 <script src="./js/index.js"></script>
 <script src="./js/request.js"></script>
-<script >
+<script>
 
-var page = 1;
-    var list = document.querySelector(".list");
-    function swipter() {
+    var page = 1;
 
-    }
+    // function swipter() {
 
-    function getShopList() {
-        REQUEST.get("/api/goodlist",
+    // }
+    var goodList = document.querySelector("#goodList");
+    function getShopList(dom) {
+
+        REQUEST.get("/goodlist",
             {
                 params: {
                     page: 1
                 }
             }, function (data) {
-                console.log(data);
+                console.log(":===============================");
+                console.log("data:", data);
                 var html = "";
                 for (var i = 0; i < data.length; i++) {
                     html += `
@@ -118,9 +124,13 @@ var page = 1;
                             </div>
                        </div>`
                 }
-                list.innerHTML = html;
+                console.log(html);
+                dom.innerHTML = html;
+
             })
+
     }
-    getShopList();
+    getShopList(goodList);
 </script>
+
 </html>

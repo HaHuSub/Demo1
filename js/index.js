@@ -3,6 +3,8 @@ var Circles = document.querySelectorAll(".circle");
 let oCircle =document.querySelector(".circle-list");
 var tcontent = document.querySelector(".t-content");
 
+var backTopBtn = document.querySelector('.backTopBtn');
+
 
 var imgs = ["./assets/images/a.jpg",
 "./assets/images/b.jpg",
@@ -69,3 +71,40 @@ tcontent.onmouseleave = function(){
 
 console.log(index);
     
+
+//回到顶部
+
+var timer = null;
+        var isTop = true;
+        //获取页面的可视窗口高度
+        var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+        //滚动条滚动时触发
+        window.onscroll = function(){
+            //在滚动的时候增加判断
+            var osTop = document.documentElement.scrollTop || document.body.scrollTop;
+            if (osTop == 0) {
+                backTopBtn.style.display = 'none';
+            }else{
+                backTopBtn.style.display = 'block';
+            }
+            if (!isTop) {
+                clearInterval(timer);
+            }
+            isTop = false;
+        };
+        backTopBtn.onclick = function(){
+           
+            timer = setInterval(function(){
+               
+                var osTop = document.documentElement.scrollTop || document.body.scrollTop; 
+                //减小的速度
+                var isSpeed = Math.floor(-osTop / 6);
+                document.documentElement.scrollTop = document.body.scrollTop = osTop + isSpeed;
+                //console.log( osTop + isSpeed);
+                isTop = true;
+            
+                if (osTop == 0) {
+                    clearInterval(timer);
+                }
+            },30);  
+        };

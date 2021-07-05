@@ -144,7 +144,7 @@ function createAxios(config) {
 // });
 
 var REQUEST = createAxios({
-    baseUrl: "http://49.232.47.192:9527"
+    baseUrl: "http://49.232.47.192:9527/api"
 })
 //客户端发送请求0
 //请求在路上1
