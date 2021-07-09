@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../componets/loading/loading.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/request.js"></script>
+</head>
+<style>
+    .list {
+        width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        margin-top: 50px;
+        justify-content: space-around;
+    }
+
+    .title {
+        font-size: 25px;
+        font-weight: bold;
+    }
+
+    .supplier {
+        margin-top: 10px;
+        font-size: 20px;
+        color: #cdcdcd;
+    }
+
+    .price {
+        margin-top: 10px;
+    }
+
+    .price span {
+        color: red;
+        margin-top: 10px;
+        font-size: 20px;
+    }
+
+    /* 放大镜 */
+    /*整个div中只放置小显示区域即可，大显示区域隐藏，这样直接对zoom设置属性就行了*/
+    .zoom {
+        width: 400px;
+        height: 400px;
+
+        /*margin-top: 1000px;  测试有滚动条情况下反应*/
+        position: relative;
+
+    }
+
+    .big_area {
+        /*大显示区域宽高可直接改变*/
+        width: 400px;
+        height: 400px;
+        position: absolute;
+        left: -10000px;
+        top: -1px;
+        border: solid 1px #000;
+        overflow: hidden;
+    }
+
+    .big_area img {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    /*遮罩层*/
+    .mask {
+        position: absolute;
+        left: -10000px;
+        top: 0;
+        width: 100px;
+        height: 100px;
+        background: rgb(85, 85, 85);
+        opacity: 0.65;
+        filter: alpha(opacity=65);
+        cursor: pointer;
+
+    }
+
+    .addShopList {
+        width: 200px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        margin-top: 20px;
+        color: white;
+        background: orangered;
+        border-radius: 10px;
+        cursor: pointer;
+
+    }
+
+    .nice span {
+        color: red;
+    }
+
+    .img-list-tab {
+        width: 500px;
+        height: 100px;
+        display: flex;
+        border: 1px solid black;
+        line-height: 100px;
+        justify-content: space-around;
+
+    }
+
+    .img-list-tab img {
+        margin-top: 10px;
+        box-sizing: border-box;
+
+    }
+
+    .active {
+        border: 1px solid black;
+    }
+</style>
+
+<body>
+    <div class="list">
+    </div>
+</body>
+<script>
+    var cc = location.search.split("=")[1];
+    console.log(cc);
+    var id = cc;
+    console.log(id);
+
+    function addShopList(){
+            var addShopList = document.querySelector(".addShopList");
+            addShopList.addEventListener("click",function(e){
+                var a = e.target.getAttribute("data-id");
+                var token = localStorage.getItem("token");
+                var username = localStorage.getItem("username")
+                api.addShopCar({goodId:a,token:token,username:username},function(data){
+                    if(data.code == 1){
+                        console.log("添加购物车成功！");
+                    } 
+                })
+                
+            })
+        }
+    api.getDetail({ goodId: id },
+        function (data) {
+            console.log(data);
+            var list = document.querySelector(".list");
+            console.log(list);
+            var d = data[0];
+            // console.log("imgs:",d.imgs);
+            var html = "";
+            html += `
+        <div> 
+            <div class="zoom">
+		<div class="small_area">
+			<img src="${d.img_list_url}" width="300" height="300" />
+			<span class="mask"></span>
+		</div>
+		<div class="big_area">
+			<img src="${d.img_list_url}" width="620" height="620">
+    </div> 
+        <div class='img-list-tab'></div> 
+	</div>
+        
+        </div>
+        <div >
+        <div class="title">${d.title}</div> 
+        <div class="supplier">${d.supplier}</div>
+        <div class="price">价格：<span>¥${d.price}</span></div>
+        <div class="mack">${d.mack}</div>
+        <div class="nice">好评人数:<span>${d.nice == null ? "暂无数据" : d.nice}</span></div>
+       <div class='addShopList' data-id="${d.Id}">添加到购物车</div>
+       
+        </div>
+       `
+            list.innerHTML = html;
+            fangdajing()
+            imgList(d.imgs)
+            tabimg();
+            addShopList();
+        })
+
+    function imgList(imgs) {
+        var tabList = document.querySelector(".img-list-tab");
+        imgs = imgs.slice(1, -1);
+        // imgs=imgs.slice(-1,);
+        console.log(imgs);
+        imgs = imgs.split(",")
+
+        for (let i = 0; i < imgs.length; i++) {
+            var img = document.createElement("img");
+            img.src = imgs[i].slice(1, -1);
+            img.style.width = 80 + "px";
+            img.style.height = 80 + "px";
+            tabList.appendChild(img);
+            console.log(img);
+        }
+
+
+
+
+    }
+    function tabimg() {
+        var listImg = document.querySelectorAll(".img-list-tab>img");
+        var small_area = document.querySelector(".small_area img");
+        var big_area = document.querySelector(".big_area img");
+        console.log(small_area, big_area);
+        console.log(listImg);
+        listImg[0].classList.add("active");
+        let oldIndex = 0;
+        listImg.forEach(function (item, index) {
+            item.onclick = function (e) {
+                item.classList.add("active");
+                listImg[oldIndex].classList.remove("active");
+                oldIndex = index;
+                var imgSrc = item.src;
+                small_area.src = imgSrc;
+                big_area.src = imgSrc;
+                console.log(imgSrc);
+            }
+        })
+    }
+    function fangdajing() {
+
+       
+        // 获取相应节点元素
+        var zoom = document.querySelector('.zoom');
+        var simg = document.querySelector('.small_area img');
+        var bimg = document.querySelector('.big_area img');
+        var big = document.querySelector('.big_area');
+        var small = document.querySelector('.small_area');
+        var mask = document.querySelector('.mask');
+
+        // 设置遮罩层宽高  小图宽 除以 大图宽 乘以 大显示区域边框
+        mask.style.width = (simg.offsetWidth / bimg.offsetWidth) * big.clientWidth + "px";
+        mask.style.height = (simg.offsetHeight / bimg.offsetHeight) * big.clientHeight + "px";
+
+        // 定义遮罩层最大边距，也就是最大移动距离
+        var maxW = simg.clientWidth - mask.offsetWidth;
+        var maxH = simg.clientHeight - mask.offsetHeight;
+
+        // 鼠标移入小显示区域发生事件：1.遮罩层显示 2.大显示区域显示
+        small.onmouseenter = function () {
+            mask.style.left = 0;
+            big.style.left = small.clientWidth + "px";
+        }
+        // 鼠标移入小显示区域发生事件：1.遮罩层消失 2.大显示区域消失
+        small.onmouseleave = function () {
+            mask.style.left = -10000 + "px";
+            big.style.left = -10000 + "px";
+        }
+        // 鼠标在小显示区域移动
+        small.onmousemove = function (e) {
+            // 解决兼容问题
+            e = e || window.event;
+            // 定义两个变量 让鼠标位置一直处于遮罩层位置中间
+            var nLeft = e.pageX - zoom.offsetLeft - zoom.clientLeft - mask.offsetWidth / 2;
+            var nTop = e.pageY - zoom.offsetTop - zoom.clientTop - mask.offsetHeight / 2;
+
+            // 设置遮罩层永远显示在小显示区域内部 也就是判断nLeft、nTop值
+            nLeft = Math.min(maxW, Math.max(0, nLeft));
+            nTop = Math.min(maxH, Math.max(0, nTop));
+
+            // 遮罩层位置
+            mask.style.left = nLeft + "px";
+            mask.style.top = nTop + "px";
+
+            // 设置大图片移动位置 跟随遮罩层百分比移动（语法带入）
+            bimg.style.left = -(bimg.offsetWidth - big.clientWidth) * (nLeft / (simg.clientWidth - mask.offsetWidth)) + "px";
+            bimg.style.top = -(bimg.offsetHeight - big.clientHeight) * (nTop / (simg.clientHeight - mask.offsetHeight)) + "px";
+
+
+        }
+    }
+
+
+
+</script>
+
+</html>

@@ -6,11 +6,11 @@ var tcontent = document.querySelector(".t-content");
 var backTopBtn = document.querySelector('.backTopBtn');
 
 
-var imgs = ["./assets/images/a.jpg",
-"./assets/images/b.jpg",
-"./assets/images/c.jpg",
-"./assets/images/d.jpg",
-"./assets/images/e.jpg","./assets/images/a.jpg"];
+var imgs = ["../assets/images/a.jpg",
+"../assets/images/b.jpg",
+"../assets/images/c.jpg",
+"../assets/images/d.jpg",
+"../assets/images/e.jpg","./assets/images/a.jpg"];
 // console.log(imgs.length);
 for(var i =0;i<imgs.length;i++){
     var img = document.createElement("img");
@@ -69,12 +69,12 @@ tcontent.onmouseleave = function(){
 }
 
 
-console.log(index);
+// console.log(index);
     
 
 //回到顶部
 
-var timer = null;
+let timer = null;
         var isTop = true;
         //获取页面的可视窗口高度
         var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
@@ -93,7 +93,7 @@ var timer = null;
             isTop = false;
         };
         backTopBtn.onclick = function(){
-           
+           clearInterval(timer)
             timer = setInterval(function(){
                
                 var osTop = document.documentElement.scrollTop || document.body.scrollTop; 
@@ -104,6 +104,7 @@ var timer = null;
                 isTop = true;
             
                 if (osTop == 0) {
+                    
                     clearInterval(timer);
                 }
             },30);  

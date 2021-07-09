@@ -68,8 +68,10 @@ axios.prototype.request = function (config) {
         // }
         if (xhr.readyState === 4 && xhr.status === 200) {
             this.instarcaptars.response.data = JSON.parse(xhr.responseText);
+            // this.instarcaptars.response.status = xhr.status;
             if (typeof config.success === 'function') {
                 config.success(this.instarcaptars.response.data);
+                //,this.instarcaptars.response.status
             }
 
         }

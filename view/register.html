@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,16 +10,18 @@
     <script src="../js/api.js"></script>
     <script src="../js/request.js"></script>
     <link rel="stylesheet" href="../css/common.css">
-    <link rel="stylesheet" href="../css/login.css">
+    <link rel="stylesheet" href="../css/register.css">
 
 </head>
+
 <body>
-    <div class='nav'></div>
-    <div class="login-box clear-fix">
+    <div class="nav"></div>
+
+    <div class="register-box clear-fix">
         <div class="title">
-            <h1>XXX商城登录</h1>
+            <h1>XXX商城注册</h1>
         </div>
-        <div class="login-input">
+        <div class="register-input">
             <div class="left">用户名</div>
             <input type="text" placeholder="请输入你的用户名">
             <p>
@@ -26,22 +29,24 @@
             </p>
         </div>
 
-        <div class="login-input">
+        <div class="register-input">
             <div class="left">密&nbsp;&nbsp;&nbsp;码</div>
             <input type="password" placeholder="请输入你密码">
             <p>
                 只能由字母数字下划线组成的6-14位字符
             </p>
         </div>
-        <div class="login-button">
-            <button>登&nbsp;&nbsp;&nbsp;录</button>
+        <div class="regiter-button">
+            <button>注&nbsp;&nbsp;&nbsp;册</button>
         </div>
     </div>
+
 </body>
 <script>
+    console.log(1);
 
-var inputs = document.querySelectorAll(".login-input input");
-    var btn_login = document.querySelector(".login-button button")
+    var inputs = document.querySelectorAll(".register-input input");
+    var btn_register = document.querySelector(".regiter-button button")
     console.log(inputs);
     //点击输入框隐藏p标签
     inputs.forEach(function (item, index) {
@@ -77,9 +82,9 @@ var inputs = document.querySelectorAll(".login-input input");
             p.innerHTML = "只能由字母数字下划线组成的6-14位字符"
         }
     })
-
-btn_login.addEventListener("click",function(e){
-    let username = inputs[0].value;
+    //导航栏
+    btn_register.addEventListener("click",function(e){
+        let username = inputs[0].value;
         let password = inputs[1].value;
         let userReg = /^[\w\u4e00-\u9fa5]{6,12}$/;
         let passwordReg = /^\w{6,12}$/;
@@ -93,23 +98,24 @@ btn_login.addEventListener("click",function(e){
             p.style.display='block';
             return
         }
-        let options = {username:username,password,password};
-       api.Login(options,function(data){
-           if(data.code==1){
-               let token = data.token;
-               localStorage.setItem('token',token);
-               localStorage.setItem("username",username);
-               setTimeout(()=>{alert("登录成功");
-               location.href='./demo.html'},2000)
-               
-           }
-       })
-})
-    //导航栏
-   
-     createNav({
-        container:'.nav',
-        logoUrl:'../assets/images/logo.png',
+        console.log('登录成功');
+        api.Register({username:username,password:password},function(data){
+            console.log(data);
+            if(data.code == 1){
+                alert("注册成功！")
+                location.href = "./login.html";
+            }else{
+                alert("注册失败")
+            }
+        })
     })
+    createNav({
+        container: '.nav',
+        logoUrl: '../assets/images/logo.png'
+    })
+   console.log(121323);
+
+
 </script>
+
 </html>

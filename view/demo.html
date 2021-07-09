@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../componets/barTop/index.js"></script>
+</head>
+<script src="../js/demo.js"></script>
+<script src="../js/request.js"></script>
+<script src="../js/api.js"></script>
+<link rel="stylesheet" href="../css/common.css">
+<link rel="stylesheet" href="../css/index.css">
+<style>
+
+
+</style>
+
+<body>
+
+
+    <div class="box">
+        <div id="nav"></div>
+        <!-- 回顶部按钮 -->
+        <div class="backTopBtn">回到顶部</div>
+
+
+        <div class="first-content">
+            <div class="wrap">
+                <div class="t-title">
+                    <ul class="t-ul">
+                        <li><a href="#">咖啡</a></li>
+                        <li><a href="#">饮食</a></li>
+                        <li><a href="#">正餐</a></li>
+                        <li><a href="#">男装</a></li>
+                        <li><a href="#">女装</a></li>
+                        <li><a href="#">眼镜</a></li>
+                        <li><a href="#">鞋靴</a></li>
+                    </ul>
+                </div>
+                <div class="t-content">
+                    <div class="carousel-map">
+
+                    </div>
+                    <ul class="circle-list">
+                        <li class="circle active" data-n="0"></li>
+                        <li class="circle" data-n="1"></li>
+                        <li class="circle" data-n="2"></li>
+                        <li class="circle" data-n="3"></li>
+                        <li class="circle" data-n="4"></li>
+
+
+                    </ul>
+                </div>
+                <div class="box">
+                    <div id="goodList" class="list clear-fix"></div>
+                </div>
+
+
+                <hr>
+                <div class="footer">
+                    <img src="../assets/images/footer.png" alt="">
+                </div>
+
+            </div>
+
+
+</body>
+<script>
+
+    let page = 1;
+    var goodList = document.querySelector("#goodList");
+    var carouselMap = document.querySelector(".carousel-map");
+    var Circles = document.querySelectorAll(".circle");
+    let oCircle = document.querySelector(".circle-list");
+    var tcontent = document.querySelector(".t-content");
+    var liList = document.querySelectorAll(".t-title li a");
+    var backTopBtn = document.querySelector(".backTopBtn");
+    //渲染商品数据
+    function getShopList(page) {
+
+        REQUEST.get("/goodlist",
+            {
+                params: {
+                    page: page
+                }
+            }, function (data) {
+                console.log(":===============================");
+                console.log("data:", data);
+                let html = "";
+                for (let i = 0; i < data.length; i++) {
+                    html += `
+                    <div class="left boxx item" data-id='${data[i].Id}'>
+                            <img src="../assets/images/loading.jpg" data-src="${data[i].img_list_url}" alt="">
+                            <hr>
+                            <p>
+                                <span class="good-title">${data[i].title}</span>
+
+                            </p>
+                            <div  class="bottom">
+                                <div class="left"> 
+                                <span>￥${data[i].price}</span>
+                            </div>
+                            <div class="right">
+                                <span>${data[i].mack}</span>
+                                </div>
+                            </div>
+                       </div>`
+                }
+                // console.log(html);
+                goodList.innerHTML = html;
+                linkDetail();
+
+            })
+
+        //     api.getShopList({ page: page }, function (data) {
+        //         console.log(data);
+        //     })
+
+    }
+
+
+    //轮播图
+    function carousel() {
+
+        var imgs = ["../assets/images/a.jpg",
+            "../assets/images/b.jpg",
+            "../assets/images/c.jpg",
+            "../assets/images/d.jpg",
+            "../assets/images/e.jpg", "../assets/images/a.jpg"];
+        // console.log(imgs.length);
+        for (var i = 0; i < imgs.length; i++) {
+            var img = document.createElement("img");
+            img.src = imgs[i];
+            carouselMap.appendChild(img);
+        }
+        var img = document.querySelector(".carousel-map>img");
+
+        //轮播图图片宽度
+        var imgWidth = img.width * 6;
+
+        //移动到第几张图图片
+        let index = 0;
+        //节流锁
+        let lock = true;
+        function handleRightBtn() {
+            index++;
+            carouselMap.style.transition = '0.5s ease';
+            if (index === 5) {
+                setTimeout(function () {
+                    carouselMap.style.left = 0;
+                    index = 0;
+                    carouselMap.style.transition = "none"
+                }, 500);
+            }
+            carouselMap.style.left = -index * imgWidth + "px";
+            setCircles();
+        }
+        function setCircles() {
+            for (let i = 0; i < Circles.length; i++) {
+                if (i == index % 5) {
+                    Circles[i].classList.add("active");
+                } else {
+                    Circles[i].classList.remove("active");
+                }
+            }
+        }
+        oCircle.onclick = function (e) {
+            if (e.target.nodeName.toLowerCase() == 'li') {
+                const n = e.target.getAttribute("data-n");
+                const theCircle = document.querySelector(`li[data-n='${n}']`);
+                index = n;
+                setCircles();
+                carouselMap.style.transition = "0.5s ease";
+                carouselMap.style.left = -index * imgWidth + "px";
+            }
+        }
+        let autopplay = setInterval(() => { handleRightBtn() }, 2000);
+        //鼠标悬浮停止轮播
+        tcontent.onmouseenter = function () {
+            clearInterval(autopplay);
+        }
+        tcontent.onmouseleave = function () {
+            clearInterval(autopplay);
+            autopplay = setInterval(() => { handleRightBtn() }, 2000)
+        }
+
+    }
+    //分类条目
+    //分类条目
+
+    liList.forEach(function (item, index) {
+        item.addEventListener("click", function (e) {
+            e.preventDefault();
+            localStorage.setItem("type", item.innerHTML);
+            location.href = "./coffee.html"
+        })
+
+    })
+
+    //回到顶部
+    var timera = null;
+    backTopBtn.onclick =function(){
+     
+           clearInterval(timera)
+            timera = setInterval(function(){
+               
+                var osTop = document.documentElement.scrollTop || document.body.scrollTop; 
+                //减小的速度
+                var isSpeed = Math.floor(-osTop / 6);
+                document.documentElement.scrollTop = document.body.scrollTop = osTop + isSpeed;
+                //console.log( osTop + isSpeed);
+                isTop = true;
+            
+                if (osTop == 0) {
+                    
+                    clearInterval(timera);
+                }
+            },30);  
+        };
+
+        window.addEventListener("scroll", function () {
+    //滚动 视口高度 （当前元素的真实高度）
+    let scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+    //可见区域高度
+    let clientHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    //滚动条顶部到浏览器顶部高度
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+    // console.log(scrollTop);
+    // console.log("clientHeight", clientHeight);
+    var flag = true;
+    var timer = null;
+
+
+    
+
+    if (clientHeight + scrollTop >= scrollHeight) {
+        if (!false) {
+            clearTimeout(timer);
+            timer = null;
+        }
+        flag = false;
+        timer = setTimeout(() => {
+            page += 1;
+            api.getShopList({ page: page }, function (data) {
+                let html = "";
+                for (let i = 0; i < data.length; i++) {
+                    html += `
+                <div class="left boxx item" data-id='${data[i].Id}'>
+                        <img src="../assets/images/loading.jpg" data-src="${data[i].img_list_url}" alt="">
+                        <hr>
+                        <p>
+                            <span class="good-title">${data[i].title}</span>
+                            
+                        </p>
+                        <div  class="bottom">
+                            <div class="left"> 
+                            <span>￥${data[i].price}</span>
+                        </div>
+                        <div class="right">
+                            <span>${data[i].mack}</span>
+                            </div>
+                        </div>
+                   </div>`
+                }
+                // console.log(html);
+                goodList.innerHTML += html;
+                setTimeout(() => {
+                    let ii = document.querySelectorAll(".item img");
+                    ii.forEach(function (item, index) {
+                        item.src = item.getAttribute("data-src");
+                    })
+                }, 400)
+                linkDetail();
+
+            })
+        }, 500)
+        setTimeout(() => {
+            flag = true; 
+
+        }, 500)
+    }
+
+})
+
+
+
+
+
+
+
+    getShopList(page);
+    carousel()
+    createNav({
+        container: '#nav',
+        logoUrl: '../assets/images/logo.png'
+
+
+    })
+</script>
+
+</html>

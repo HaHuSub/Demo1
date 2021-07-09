@@ -42,7 +42,7 @@
             </div>
         </div>
         <div class="three-content">
-            <div class="first-content">
+            <div class="first-content" style="display: block;">
                 <div class="wrap">
                     <div class="t-title">
                         <ul class="t-ul">
@@ -71,44 +71,104 @@
                     </div>
                     <div class="box">
                         <div id="goodList" class="list clear-fix"></div>
-                    </div>
+                </div>
 
-                    <hr>
 
+                <hr>
+                <div class="footer">
+                    <img src="./assets/images/footer.png" alt="">
+                </div>
+
+            </div>
+        </div>
+        <div class="second-content"  style="display: none;">
+            <div class="login-box">
+                <div>
+                    <h1>XXX商城欢迎你</h1>
+                </div>
+                <div class="user-input">
+        
+                    <div class="left">用户名</div>
+                    <input type="text" placeholder="请输入你的用户名">
+                    <p>
+                        只能由字母数字汉字下划线组成的6-14位字符
+                    </p>
+                </div>
+
+                <div class="user-input">
+                   
+                    <div class="left">密&nbsp;&nbsp;&nbsp;码</div>
+                    <input type="password" placeholder="请输入你密码">
+                    <p>
+                       只能由字母数字下划线组成的6-14位字符
+                    </p>
+                </div>
+                <div class="user-button">
+                    <button>登&nbsp;&nbsp;&nbsp;录</button>
                 </div>
             </div>
-
         </div>
-        <!-- <div class="list">
+        <div class="thrid-content" style="display: none;" >
+            <div class="register-box">
+                <div>
+                    <h1>XXX商城注册</h1>
+                </div>
+                <div class="register-input">
+        
+                    <div class="left">用户名</div>
+                    <input type="text" placeholder="请输入你的用户名">
+                    <p>
+                        只能由字母数字汉字下划线组成的6-14位字符
+                    </p>
+                </div>
+                <div class="register-input">
+                    <div class="left">密&nbsp;&nbsp;&nbsp;码</div>
+                    <input type="password" placeholder="请输入你密码">
+                    <p>
+                       只能由字母数字下划线组成的6-14位字符
+                    </p>
+                </div>
+                <div class="regiter-button">
+                    <button>注&nbsp;&nbsp;&nbsp;册</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- <div class="list">
 
         </div> -->
     </div>
 </body>
 <script src="./js/index.js"></script>
 <script src="./js/request.js"></script>
+<script src="./js/api.js"></script>
 <script>
-
+    var search = document.querySelector(".search input")
+    var searchBtn = document.querySelector(".search div")
+   
+    var input = document.querySelectorAll(".user-input input");
     var page = 1;
-
-    // function swipter() {
-
-    // }
     var goodList = document.querySelector("#goodList");
-    function getShopList(dom) {
-
+    var username,password;
+    var btn = document.querySelector(".user-button button")
+    console.log(goodList);
+    //渲染商品数据
+    function getShopList(page) {
+        console.log("aa");
         REQUEST.get("/goodlist",
             {
                 params: {
-                    page: 1
+                    page: page
                 }
             }, function (data) {
                 console.log(":===============================");
                 console.log("data:", data);
-                var html = "";
-                for (var i = 0; i < data.length; i++) {
+                let html = "";
+                for (let i = 0; i < data.length; i++) {
                     html += `
-                    <div class="left boxx">
-                            <img src="${data[i].img_list_url}" alt="">
+                    <div class="left boxx item" data-id='${data[i].Id}'>
+                            <img src="./assets/images/loading.jpg" data-src="${data[i].img_list_url}" alt="">
                             <hr>
                             <p>
                                 <span class="good-title">${data[i].title}</span>
@@ -124,13 +184,274 @@
                             </div>
                        </div>`
                 }
-                console.log(html);
-                dom.innerHTML = html;
+                // console.log(html);
+                goodList.innerHTML = html;
+                linkDetail();
 
             })
 
     }
-    getShopList(goodList);
+    //验证登录页面输入框
+    function RegLogin(){
+        input.forEach(function(item,index){
+           item.addEventListener('click',function(){
+            //    console.log("item:",item);
+               var p = item.nextElementSibling;
+               p.style.display = "none";
+           })
+        })
+        //验证用户名
+        input[0].addEventListener("keyup",function(e){
+            var userReg = /^[a-zA-Z0-9_\u4e00-\u9fa5]{6,14}$/;
+            if(userReg.test(e.target.value)){
+                username = e.target.value;
+                var p = e.target.nextElementSibling;
+                p.innerHTML = '验证通过';
+                p.style.display="block";
+                p.style.color = 'green';
+                input[0].isPass = true;
+            }else{
+                var p = e.target.nextElementSibling;
+                p.innerHTML = "只能由字母数字汉字下划线组成的6-14位字符";
+                p.style.display = "block";
+                p.style.color = 'red';
+                input[0].isPass = false;
+            }
+            
+        })
+        //验证密码输入
+        input[1].addEventListener("keyup",function(e){
+            var passwordReg = /^[\w]{6,14}$/;
+            if(passwordReg.test(e.target.value)){
+                password = e.target.value;
+                var p = e.target.nextElementSibling;
+                p.innerHTML = '验证通过';
+                p.style.display="block";
+                p.style.color = 'green';
+                input[0].isPass = true;
+            }else{
+                var p = e.target.nextElementSibling;
+                p.innerHTML = "只能由字母数字下划线组成的6-14位字符";
+                p.style.display = "block";
+                p.style.color = 'red';
+                input[0].isPass = false;
+            }
+            
+        })
+
+        //点击按钮登录页面
+        btn.addEventListener("click",function(e){
+            var pass = input[0].isPass&&input[1].isPass;
+            if(!pass){
+                return;
+            }
+            var option = {
+                username:username,
+                password:password
+            }
+            var load = createLoading({}).show();
+            //登录请求成功
+            api.Login(option,function(data){
+                if(data.code === 1){
+                    var token = data.token;
+                    localStorage.setItem('token',token);
+                    setTimeout(()=>{
+                        load.hide();
+                        //切换一下tab
+                    },500)
+                }
+                alert("登录成功")
+            })
+        })
+    }
+    RegLogin()
+   getShopList(page);
+   searchgoodList();
+
+
+ 
+var button_re = document.querySelector(".regiter-button button");
+var input_re =document.querySelectorAll(".register-input input");
+input_re.forEach(function(item,index){
+    item.onclick=function(){
+        //获取下一个兄弟元素
+        var p = item.nextElementSibling;
+        p.style.display = "none";
+    }
+})
+
+
+input_re[0].addEventListener("keyup",function(e){
+    
+    var userReg = /^[a-zA-Z0-9_\u4e00-\u9fa5]{6,12}$/;
+    if(userReg.test(e.target.value)){
+        username = e.target.value;
+        var p = e.target.nextElementSibling;
+        p.innerText = '验证通过'
+        p.style.display = 'block';
+        p.style.color = 'green';
+        //记录验证是否通过
+        input_re[0].isPass = true;
+    }else{
+        var p = e.target.nextElementSibling;
+        p.innerText = '只能包含数字 字母下划线 汉字6-12位'
+        p.style.display = 'block';
+        p.style.color = 'red';
+        input_re[0].isPass = false;
+    }
+})
+
+input_re[1].addEventListener("keyup",function(e){
+ 
+    var passwordReg = /^[a-zA-Z0-9_]{6,12}$/;
+    if(passwordReg.test(e.target.value)){
+        password = e.target.value;
+        var p = e.target.nextElementSibling;
+        p.innerText = '验证通过'
+        p.style.display = 'block';
+        p.style.color = 'green';
+        input_re[1].isPass = true;
+    }else{
+        var p = e.target.nextElementSibling;
+        p.innerText = '只能包含数字 字母下划线6-12位'
+        p.style.display = 'block';
+        p.style.color = 'red';
+        input_re[1].isPass = false;
+    }
+})
+
+button_re.onclick=function(){
+    let username = input_re[0].value;
+    let password = input_re[1].value;
+    let userReg = /^[a-zA-Z0-9_\u4e00-\u9fa5]{6,12}$/;
+    let passwordReg = /^\w{6,12}$/;
+    //如果验证的用户名没有通过,显示提示信息 结束语句
+    if(!userReg.test(username)){
+        var p = input_re[0].nextElementSibling;
+        p.style.display='block';
+        return
+    }
+    if(!passwordReg.test(password)){
+        var p = input_re[1].nextElementSibling;
+        p.style.display='block';
+        return
+    }
+    console.log(username,password);
+    console.log("用户名和密码都通过");
+    //发送注册请求
+    api.getRegister({
+        username:username,
+        password:password
+    },function(data){
+        console.log(data);
+        if(data.code == 1){
+            alert('注册成功!');
+            //切换tab界面
+        }else{
+            alert('注册失败!')
+        }
+    })
+}
+
+// var item = document.querySelectorAll('#goodList .item');
+// console.log("item",item);
+function linkDetail(){
+    var item = document.querySelectorAll('#goodList .item');
+    
+    for(let i =0;i<item.length;i++){
+        (function(i){
+            item[i].onclick=function(){
+                var id = item[i].getAttribute('data-id')
+           
+                location.href = `./view/detail.html?goodId=${id}`;
+            }
+        })(i)
+    }
+}
+//搜索功能
+function searchgoodList(){
+    searchBtn.onclick=function(e){
+        if(search.value==""){
+            alert("请输入你要搜索的关键字")
+            return;
+        }
+      
+        localStorage.setItem("searchItem",search.value)
+        location.href=`./view/search.html`
+    }
+    
+}
+
+window.addEventListener("scroll",function(){
+    //滚动 视口高度 （当前元素的真实高度）
+    let scrollHeight = document.documentElement.scrollHeight||document.body.scrollHeight;
+    //可见区域高度
+    let clientHeight = window.innerHeight||document.documentElement.clientHeight||document.body.clientHeight;
+    //滚动条顶部到浏览器顶部高度
+    let scrollTop = window.pageYOffset||document.documentElement.scrollTop||document.body.scrollTop;
+    console.log(scrollTop);
+    console.log("clientHeight",clientHeight);
+    var flag = true;
+    var timer = null;
+
+    if(clientHeight+scrollTop >= scrollHeight){
+        if(!false){
+            clearTimeout(timer);
+            timer = null;
+        }
+        flag = false;
+        timer = setTimeout(()=>{
+            page+=1;
+            api.getShopList({page:page},function(data){
+                let html = "";
+                for (let i = 0; i < data.length; i++) {
+                    html += `
+                    <div class="left boxx item" data-id='${data[i].Id}'>
+                            <img src="./assets/images/loading.jpg" data-src="${data[i].img_list_url}" alt="">
+                            <hr>
+                            <p>
+                                <span class="good-title">${data[i].title}</span>
+                                
+                            </p>
+                            <div  class="bottom">
+                                <div class="left"> 
+                                <span>￥${data[i].price}</span>
+                            </div>
+                            <div class="right">
+                                <span>${data[i].mack}</span>
+                                </div>
+                            </div>
+                       </div>`
+                }
+                // console.log(html);
+                goodList.innerHTML += html;
+                setTimeout(()=>{
+                    let ii = document.querySelectorAll(".item img");
+                    ii.forEach(function(item,index){
+                        item.src = item.getAttribute("data-src");
+                    })
+                },400)
+                linkDetail();
+ 
+            })
+        },500)
+        setTimeout(()=>{
+            flag = true;IDC
+
+        },500)
+    }
+  
+})
+
+var liList = document.querySelectorAll(".t-title li a");
+liList.forEach(function(item,index){
+    item.addEventListener("click",function(e){
+        e.preventDefault();
+        localStorage.setItem("type",item.innerHTML);
+        location.href = "./view/coffee.html"
+    })
+
+})
 </script>
 
 </html>

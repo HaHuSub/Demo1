@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../componets/barTop/index.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/request.js"></script>
+
+</head>
+<style>
+
+    .shopCar{
+        width: 1400px;
+       
+        margin: 0 auto;
+        border: 1px solid blue;
+        padding:30px 0px;
+    }
+    .item{
+        display: flex;
+        height: 110px;
+        width: 1000px;
+        margin: 10px auto;
+        line-height: 110px;
+        border: 1px solid blue;
+        text-align: center;
+        
+        
+
+    }
+    .item div{
+        height: 110px;
+        width: 100px;
+        /* border: 1px solid blue; */
+        line-height: 110px;
+        
+    }
+    .item .item-id{
+        width: 30px;
+       
+
+    }
+    .item .check{
+        width: 30px;
+    }
+    .item .item-img{
+        width: 200px;
+        height: 110px;
+    }
+    .item .item-img>img{
+        width: 150px;
+        height: 100px;
+        padding: 10px;
+        padding-top: 5px;
+    }
+    .item .item-title{
+        width: 350px;
+        line-height: 0;
+        text-align: left;
+
+    }
+
+    .item .item-quantity{
+        width: 170px;
+       
+    }
+    .item .item-quantity input{
+        width: 20px;
+        height: 20px;
+        outline: none;
+        border: 1px solid #cdcdcd;
+        text-align: center;
+    }
+    .item .item-quantity button{
+        width: 40px;
+        height: 22px;
+        outline: none;
+        background-color: white;
+        border: 1px solid #cdcdcd;
+        border-radius: 1px;
+        margin-left: 3px;
+        margin-right: 3px;
+    }
+    .item-title h1{
+     
+        font-size: 20px;
+        margin-top: 20px;
+      
+    }
+    .item-title p{
+        margin-top: 25px;
+    }
+    .item-price span{
+        color: red;
+    }
+    .item_del button{
+        background-color: white;
+        border: 1px solid red;
+        outline: none;   
+        border-radius: 10%;
+    }
+    /* .item .item_del .del{
+       width: 70px;
+       height: 30px;
+       border: 1px solid blue;
+       font-size: 10px;
+       margin: 0 auto;
+    } */
+    /* .item .item_del{
+        
+    } */
+</style>
+<body>
+    <div id="nav"></div>
+    <div class="shopCar">
+        <div class="item">
+            <div class="check"><input type="checkbox"></div>
+            <div class="item-id">1</div>
+            <div class="item-img"><img src="../assets/images/loading.jpg" alt=""></div>
+            <div class="item-title">
+                <h1>dasdas</h1>
+                <p>dasd</p>
+                <p>dasdas</p>
+            </div>
+          
+            <div class="item-price">￥<span>100</span>元</div>
+    
+            <div class="item-quantity"><button>-</button><input type="number" value="1"><button>+</button></div>
+            <div class="item_del">删除</div>
+        </div>
+    </div>
+</body>
+<script>
+var count = 1;
+var token = localStorage.getItem("token");
+var html = "";
+var showCar = document.querySelector(".shopCar");
+api.ShowCar({token:token},function(data){
+    console.log(data);
+    for(let i = 0;i<data.length;i++){
+
+        html += `
+
+        <div class="item">
+            <div class="check"><input type="checkbox"></div>
+            <div class="item-id">${i+1}</div>
+            <div class="item-img"><img src="${data[i].img_url}" data-src="${data[i].img_url}" alt=""></div>
+            <div class="item-title">
+                <h1>${data[i].title}</h1>
+                <p>${data[i].supplier}</p>
+                <p>${data[i].mack}</p>
+            </div>
+          
+            <div class="item-price">￥${data[i].price}元</div>
+    
+            <div class="item-quantity"><button class='add' data-id='${data[i].Id}'>+</button><input type="text" value="${data[i].count}"><button class='reduce' data-id='${data[i].Id}'>-</button></div>
+            <div class="item_del"><button data-id='${data[i].Id}' >删除</button></div>
+     
+    </div>`;
+    }
+    
+    showCar.innerHTML = html;
+    add();
+    reduce();
+    deleteItem();
+})
+    
+function add(){
+    var add =  document.querySelectorAll(".add");
+    add.forEach(function(item,index){
+        item.onclick = function(e){
+            var id = item.getAttribute("data-id");
+            var token = localStorage.getItem("token");
+            console.log('item');
+            var input = item.nextElementSibling;
+            // var input_value = item.nextElementSibling();
+            api.addNum({goodId:id,token:token},function(data){
+                if(data.code==1){
+                console.log("数据添加成功");
+                input.value = parseInt(input.value) +1;
+               
+            }else{
+                alert("商品添加失败")
+            }
+        })
+            console.log(id);
+        }
+    })
+}
+
+function reduce(){
+    var reduce =  document.querySelectorAll(".reduce");
+    reduce.forEach(function(item,index){
+        item.onclick = function(e){
+            var id = item.getAttribute("data-id");
+            var token = localStorage.getItem("token");
+            console.log('item');
+            var input = item.previousElementSibling;
+            if(input.value <=0){return};
+            // var input_value = item.nextElementSibling();
+            api.removeNum({goodId:id,token:token},function(data){
+                if(data.code==1){
+                console.log("数据修改");
+                input.value = parseInt(input.value) -1;
+                
+               
+            }else{
+                alert("商品添加失败")
+            }
+        })
+            console.log(id);
+        }
+    })
+}
+
+function deleteItem(){
+    var shopList = document.querySelectorAll(".item_del button");
+    shopList.forEach(function(item,index){
+        var token = localStorage.getItem("token");
+        item.onclick= function(e){
+            var id = item.getAttribute('data-id');
+            console.log(id);
+            api.deleteNum({token:token,goodId:id},function(data){
+                if(data.code == 1){
+                 var a =  confirm("确定要删除嘛");
+                 console.log(a);
+                 if(a){
+                    
+                    var node = item.parentElement.parentElement;
+                    showCar.removeChild(node);
+                 }else{return}
+                }else{
+                    alert("删除失败")
+                    return;
+                }
+               
+            })
+        }
+    }) 
+}
+     createNav({
+        container: '#nav',
+        logoUrl: '../assets/images/logo.png'
+    })
+</script>
+</html>

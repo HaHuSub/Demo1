@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/index.css">
+    <script src="../js/api.js"></script>
+    <script src="../js/request.js"></script>
+</head>
+<style>
+    .boxa {
+        width: 1500px;
+        margin: 0 auto;
+    }
+
+    .list {
+        width: 1500px;
+        display: flex;
+        flex-wrap: wrap;
+    }
+</style>
+
+<body>
+    <div class="boxa">
+        <div class="list">
+
+
+        </div>
+        <div class="footer">
+            <img src="" data-src="../assets/images/footer.png" alt="">
+        </div>
+    </div>
+
+</body>
+<script>
+    var list = document.querySelector(".list");
+    var value = localStorage.getItem('searchItem');
+    console.log(value);
+    api.getSearch({ word: value }, function (data) {
+
+        var html = "";
+        if (data.length == 0) {
+            html = "<div><h1>暂无数据</h1></div>"
+        } else if (data.length > 0) {
+            for (let i = 0; i < data.length; i++) {
+                console.log(data[i].Id);
+                html += `
+                    <div class="left boxx item" data-id='${data[i].Id}'>
+                            <img src="../assets/images/loading.jpg" data-src="${data[i].img_list_url}" alt="">
+                            <hr>
+                            <p>
+                                <span class="good-title">${data[i].title}</span>
+                                
+                            </p>
+                            <div  class="bottom">
+                                <div class="left"> 
+                                <span>￥${data[i].price}</span>
+                            </div>
+                            <div class="right">
+                                <span>${data[i].mack}</span>
+                                </div>
+                            </div>
+                       </div>`
+            }
+        }
+        list.innerHTML = html;
+        linkDetail();
+
+        let imgList = document.querySelectorAll(".list img");
+        imgList.forEach(function (item, index) {
+            setTimeout(() => {
+                item.src = item.getAttribute("data-src");
+            }, 20)
+
+        })
+
+    })
+
+    function linkDetail() {
+        var item = document.querySelectorAll('.list .item');
+
+        for (let i = 0; i < item.length; i++) {
+            (function (i) {
+                item[i].onclick = function () {
+                    var id = item[i].getAttribute('data-id')
+                    // console.log(`./view/detail.html?goodId=${id}`);
+                    location.href = `./detail.html?goodId=${id}`;
+                }
+            })(i)
+        }
+    }
+    setTimeout(() => {
+        let ii = document.querySelector(".footer img");
+        ii.src = ii.getAttribute("data-src");
+    }, 2000)
+
+
+</script>
+
+</html>
