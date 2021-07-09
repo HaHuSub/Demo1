@@ -222,7 +222,7 @@ function deleteItem(){
         var token = localStorage.getItem("token");
         item.onclick= function(e){
             var id = item.getAttribute('data-id');
-            console.log(id);
+       
             api.deleteNum({token:token,goodId:id},function(data){
                 if(data.code == 1){
                  var a =  confirm("确定要删除嘛");
